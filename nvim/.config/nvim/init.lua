@@ -92,6 +92,16 @@ do
   -- Enable faster startup by caching compiled Lua modules
   vim.loader.enable()
 
+  -- TODO: find a better location for this
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'go',
+    callback = function()
+      vim.opt_local.expandtab = false
+      vim.opt_local.tabstop = 4
+      vim.opt_local.shiftwidth = 4
+    end,
+  })
+
   -- Set <space> as the leader key
   -- See `:help mapleader`
   --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -944,9 +954,7 @@ do
     local has_indent_query = vim.treesitter.query.get(language, 'indents') ~= nil
 
     -- Enable treesitter based indentation
-    if has_indent_query and language ~= 'go' then
-      vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-    end
+    if has_indent_query and language ~= 'go' then vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" end
   end
 
   local available_parsers = require('nvim-treesitter').get_available()

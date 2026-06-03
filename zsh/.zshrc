@@ -122,5 +122,5 @@ bindkey -v
 export GOPATH=$HOME/go
 
 if [ -f ~/.zshrc.local ]; then
-    source ~/.zshrc.local
+  source ~/.zshrc.local
 fi
