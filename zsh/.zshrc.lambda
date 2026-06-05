@@ -1,0 +1,34 @@
+# Added by termtile (https://github.com/apaszke/termtile)
+alias ul='osascript ~/.termtile/tile.scpt up left'
+alias ur='osascript ~/.termtile/tile.scpt up right'
+alias dl='osascript ~/.termtile/tile.scpt down left'
+alias dr='osascript ~/.termtile/tile.scpt down right'
+alias fl='osascript ~/.termtile/tile.scpt left'
+alias fr='osascript ~/.termtile/tile.scpt right'
+alias up='osascript ~/.termtile/tile.scpt up'
+alias down='osascript ~/.termtile/tile.scpt down'
+alias big='osascript ~/.termtile/resize.scpt '
+alias cen='osascript ~/.termtile/center.scpt '
+alias max='osascript ~/.termtile/maximize.scpt '
+alias sn='osascript ~/.termtile/changeScreen.scpt next'
+alias fs='osascript ~/.termtile/fullscreen.scpt '
+
+alias pgstart='pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start'
+alias pgstop='pg_ctl -D /usr/local/var/postgres stop -s -m fast'
+
+export HOMEBREW_GITHUB_API_TOKEN=1d461b28000766ca31c558a55d786f999d1fddf7
+
+[ -f "/Users/Lewis/.ghcup/env" ] && . "/Users/Lewis/.ghcup/env" # ghcup-env
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+export PATH=$PATH:$HOME/bin:$HOME/.local/bin
+export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:/usr/local/opt/ruby/bin
+export PATH=$PATH:/usr/local/opt/python@3.14/libexec/bin
+export PATH=$PATH:/Library/TeX/texbin
+export PATH=$PATH:/usr/local/bin:/usr/local/sbin
+export PATH=$PATH:/usr/bin:/bin:/usr/sbin:/sbin
+
+. ~/bin/z.sh
