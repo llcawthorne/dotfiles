@@ -18,8 +18,13 @@ alias pgstop='pg_ctl -D /usr/local/var/postgres stop -s -m fast'
 
 export HOMEBREW_GITHUB_API_TOKEN=1d461b28000766ca31c558a55d786f999d1fddf7
 
+# rustup manages rust
+. "$HOME/.cargo/env"
+
+# ghcup manages ghci and stack (haskell)
 [ -f "/Users/Lewis/.ghcup/env" ] && . "/Users/Lewis/.ghcup/env" # ghcup-env
 
+# nvm manages node
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
