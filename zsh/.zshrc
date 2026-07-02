@@ -115,11 +115,80 @@ mdview() {
 alias vi='nvim'
 alias vim='nvim'
 
+# Other handy command line aliases
+# search and replace in a file. Use vsed old_text new_text **/*.py for all py files
+vsed() {
+    search=$1
+    replace=$2
+    shift
+    shift
+    vim -c "bufdo! set eventignore-=Syntax| %s/$search/$replace/gce" $*
+}
+
+# cleanup pyc/pyo/__pycache__
+alias pyclean='find . \
+    \( -type f -name "*.py[co]" -o -type d -name "__pycache__" \) -delete &&
+    echo "Removed pycs and __pycache__"'
+
+# ps aux with grep, but remove grep from results
+alias pg='ps aux | grep -v grep | grep $1'
+
+# Use Firefox to preview grip files
+grip-dark() {
+    grip $1 &
+    sleep 1
+    open -a Firefox "http://localhost:6419"
+    wait
+}
+
+# To attempt to load a Python module and make sure it's installed
+try_module() {
+    python -c "
+exec('''
+try:
+    import ${1} as _
+except Exception as e:
+    print(e)
+''')"
+}
+
+# Find and switch to module directory
+find_module_dir() {
+  module=$(sed 's/-/_/g' <<< $1)
+  MODULE_DIRECTORY=`python -c "
+exec('''
+try:
+    import os.path as _, ${module}
+    print(_.dirname(_.realpath(${module}.__file__)))
+except Exception as e:
+    print(e)
+''')"`
+  if  [[ -d $MODULE_DIRECTORY ]]; then
+    cd $MODULE_DIRECTORY
+  else
+    echo "Module ${1} not found or is not importable: $MODULE_DIRECTORY"
+  fi
+}
+
+# Convert a csv to json
+csv2json() {
+    python -c "
+exec('''
+import csv,json
+print(json.dumps(list(csv.reader(open(\'${1}\')))))
+''')"
+}
+
 ## Also, zshrc sets keybindings based on $EDITOR, but since we use EMACS
 ## in EVIL mode, it won't understand.  Get them vim keybindings here:
 bindkey -v
 
 export GOPATH=$HOME/go
+
+# Remove the safety aliases introduced by common-aliases
+unalias rm
+unalias cp
+unalias mv
 
 if [ -f ~/.zshrc.local ]; then
   source ~/.zshrc.local

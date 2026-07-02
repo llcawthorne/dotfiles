@@ -118,6 +118,7 @@ do
 
   -- Make line numbers default
   vim.o.number = true
+
   -- You can also add relative line numbers, to help with jumping.
   --  Experiment for yourself to see if you like it!
   -- vim.o.relativenumber = true
@@ -130,6 +131,11 @@ do
 
   -- Don't show the mode, since it's already in the status line
   vim.o.showmode = false
+
+  -- Default tab options, 4 spaces
+  vim.o.expandtab = true
+  vim.o.tabstop = 4
+  vim.o.shiftwidth = 4
 
   -- Sync clipboard between OS and Neovim.
   --  Schedule the setting after `UiEnter` because it can increase startup-time.
@@ -717,14 +723,19 @@ do
   ---@type table<string, vim.lsp.Config>
   local servers = {
     -- clangd = {},
-    gopls = {
-      vim.api.nvim_create_autocmd('BufWritePre', {
-        pattern = '*.go',
-        callback = function() vim.lsp.buf.format { async = false } end,
-      }),
+    gopls = {},
+    pyright = {
+      capabilities = {
+        signatureHelpProvider = false,
+      },
     },
-    pyright = {},
     rust_analyzer = {},
+    clojure_lsp = {},
+    kotlin_language_server = {
+      cmd_env = {
+        JAVA_HOME = vim.fn.expand '~/.sdkman/candidates/java/21.0.7-tem',
+      },
+    },
     --
     -- Some languages (like typescript) have entire language plugins that can be useful:
     --    https://github.com/pmizio/typescript-tools.nvim
@@ -811,11 +822,16 @@ do
     format_on_save = function(bufnr)
       -- You can specify filetypes to autoformat on save here:
       local enabled_filetypes = {
-        -- lua = true,
-        -- python = true,
+        lua = true,
+        python = true,
+        rust = true,
+        go = true,
+        clojure = true,
+        javascript = true,
+        kotlin = true,
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
-        return { timeout_ms = 500 }
+        return { timeout_ms = 3000 }
       else
         return nil
       end
@@ -825,16 +841,20 @@ do
     },
     -- You can also specify external formatters in here.
     formatters_by_ft = {
-      -- rust = { 'rustfmt' },
+      rust = { 'rustfmt' },
       -- Conform can also run multiple formatters sequentially
-      -- python = { "isort", "black" },
+      python = { 'isort', 'black' },
+      clojure = { 'cljfmt' },
+      kotlin = { 'ktlint' },
+      go = { 'gofmt' },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
-      -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      javascript = { 'prettierd', 'prettier', stop_after_first = true },
     },
   }
 
   vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
+  vim.keymap.set('i', '<C-s>', vim.lsp.buf.signature_help, { desc = 'Signature help' })
 end
 
 -- ============================================================
@@ -881,7 +901,7 @@ do
       -- <c-k>: Toggle signature help
       --
       -- See `:help blink-cmp-config-keymap` for defining your own keymap
-      preset = 'default',
+      preset = 'super-tab', -- changed from 'default"
 
       -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
       --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
@@ -915,7 +935,7 @@ do
     fuzzy = { implementation = 'lua' },
 
     -- Shows a signature help window while you type arguments for a function
-    signature = { enabled = true },
+    signature = { enabled = false },
   }
 end
 
@@ -995,12 +1015,12 @@ do
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug'
-  -- require 'kickstart.plugins.indent_line'
-  -- require 'kickstart.plugins.lint'
-  -- require 'kickstart.plugins.autopairs'
-  -- require 'kickstart.plugins.neo-tree'
-  -- require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
+  require 'kickstart.plugins.debug'
+  require 'kickstart.plugins.indent_line'
+  require 'kickstart.plugins.lint'
+  require 'kickstart.plugins.autopairs'
+  require 'kickstart.plugins.neo-tree'
+  require 'kickstart.plugins.gitsigns' -- adds gitsigns recommended keymaps
 
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --
