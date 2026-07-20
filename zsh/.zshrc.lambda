@@ -42,9 +42,12 @@ export PATH=$PATH:/usr/bin:/bin:/usr/sbin:/sbin
 
 # Always start tmux
 # Auto-attach or create tmux session
-if command -v tmux &>/dev/null && [ -z "$TMUX" ]; then
-  tmux attach -t main 2>/dev/null || tmux new-session -s main
+if [[ -n "$ITERM_SESSION_ID" && -z "$TMUX" ]]; then
+  session_name="iterm-${ITERM_SESSION_ID//[:.]/_}"
+  tmux new-session -A -s "$session_name"
 fi
+
+export HOMEBREW_GITHUB_API_TOKEN="$(gh auth token 2>/dev/null)"
 
 . ~/bin/z.sh
 

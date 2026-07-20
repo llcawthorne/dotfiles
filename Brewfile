@@ -41,6 +41,7 @@ brew "pandoc"
 brew "basictex"                    # pandoc PDF rendering backend
 
 # Languages & runtimes
+brew "elixir"
 brew "go"
 brew "nvm"
 brew "rustup"
@@ -80,6 +81,7 @@ cask "meld"
 cask "jdownloader"
 cask "jupyterlab-app"
 cask "font-fira-code-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
 cask "1password"
 cask "dropbox"
 cask "fantastical"

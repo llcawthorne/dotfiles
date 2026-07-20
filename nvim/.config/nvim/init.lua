@@ -102,6 +102,24 @@ do
     end,
   })
 
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = { 'html', 'css', 'json', 'markdown' },
+    callback = function()
+      vim.opt_local.tabstop = 2
+      vim.opt_local.shiftwidth = 2
+      vim.opt_local.expandtab = true
+      if vim.bo.filetype == 'html' then vim.opt_local.indentexpr = '' end
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'kotlin',
+    callback = function() vim.opt_local.formatoptions:remove { 'r', 'o' } end,
+  })
+
+  -- Type ;; in insert mode to instantly get a padded pipe operator
+  vim.keymap.set('i', ';;', '|> ', { desc = 'Insert Elixir pipe operator' })
+
   -- Set <space> as the leader key
   -- See `:help mapleader`
   --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -731,18 +749,28 @@ do
     },
     rust_analyzer = {},
     clojure_lsp = {},
-    kotlin_language_server = {
-      cmd_env = {
-        JAVA_HOME = vim.fn.expand '~/.sdkman/candidates/java/21.0.7-tem',
-      },
-    },
+    elixirls = {},
+    -- this one was messing up in Gradle projects due to a known bug
+    -- so got disabled. I do most Kotlin in IntelliJ anyway.
+    --kotlin_language_server = {
+    --  cmd_env = {
+    --    JAVA_HOME = vim.fn.expand '~/.sdkman/candidates/java/21.0.7-tem',
+    --  },
+    --  init_options = {
+    --    storagePath = (function()
+    --      local path = vim.fn.stdpath 'cache' .. '/kotlin_language_server'
+    --      vim.fn.mkdir(path, 'p')
+    --      return path
+    --    end)(),
+    --  },
+    --},
+    sourcekit = {}, -- Apple's LSP server for Swift
     --
     -- Some languages (like typescript) have entire language plugins that can be useful:
     --    https://github.com/pmizio/typescript-tools.nvim
     --
     -- But for many setups, the LSP (`ts_ls`) will work just fine
     ts_ls = {},
-
     stylua = {}, -- Used to format Lua code
 
     -- Special Lua Config, as recommended by neovim help docs
@@ -798,6 +826,11 @@ do
   --
   -- You can press `g?` for help in this menu.
   local ensure_installed = vim.tbl_keys(servers or {})
+  ensure_installed = vim.tbl_filter(function(name)
+    -- mason doesn't have sourcekit and hasn't responded to the bug request
+    -- to add it, but it comes with Xcode.
+    return name ~= 'sourcekit'
+  end, ensure_installed)
   vim.list_extend(ensure_installed, {
     -- You can add other tools here that you want Mason to install
   })
@@ -829,6 +862,7 @@ do
         clojure = true,
         javascript = true,
         kotlin = true,
+        elixir = true,
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
         return { timeout_ms = 3000 }
@@ -847,6 +881,7 @@ do
       clojure = { 'cljfmt' },
       kotlin = { 'ktlint' },
       go = { 'gofmt' },
+      elixir = { 'mix_format' },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
       javascript = { 'prettierd', 'prettier', stop_after_first = true },
@@ -951,6 +986,8 @@ do
 
   -- NOTE: You can also specify a branch or a specific commit
   vim.pack.add { { src = gh 'nvim-treesitter/nvim-treesitter', version = 'main' } }
+  -- Add vim-endwise for automatic 'do...end' completion!
+  vim.pack.add { { src = gh 'RRethy/nvim-treesitter-endwise' } }
 
   -- Ensure basic parsers are installed
   local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
