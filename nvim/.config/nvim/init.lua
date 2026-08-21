@@ -92,33 +92,39 @@ do
   -- Enable faster startup by caching compiled Lua modules
   vim.loader.enable()
 
-  -- TODO: find a better location for this
   vim.api.nvim_create_autocmd('FileType', {
-    pattern = 'go',
-    callback = function()
-      vim.opt_local.expandtab = false
-      vim.opt_local.tabstop = 4
-      vim.opt_local.shiftwidth = 4
+    pattern = { 'go', 'python', 'java', 'c', 'cpp', 'kotlin', 'html' },
+    callback = function(args)
+      local ft = args.match
+
+      if ft == 'go' then
+        vim.opt_local.expandtab = false
+        vim.opt_local.tabstop = 4
+        vim.opt_local.shiftwidth = 4
+      elseif ft == 'python' or ft == 'java' or ft == 'c' or ft == 'cpp' then
+        vim.opt_local.tabstop = 4
+        vim.opt_local.shiftwidth = 4
+        vim.opt_local.expandtab = true
+      elseif ft == 'kotlin' then
+        vim.opt_local.formatoptions:remove { 'r', 'o' }
+      elseif ft == 'html' then
+        vim.opt_local.indentexpr = ''
+      end
     end,
   })
 
+  local semicolon_shortcuts = {
+    elixir = { rhs = '|> ', desc = 'Insert Elixir pipe operator' },
+    haskell = { rhs = '>>= ', desc = 'Insert Haskell bind operator' },
+  }
+
   vim.api.nvim_create_autocmd('FileType', {
-    pattern = { 'html', 'css', 'json', 'markdown' },
-    callback = function()
-      vim.opt_local.tabstop = 2
-      vim.opt_local.shiftwidth = 2
-      vim.opt_local.expandtab = true
-      if vim.bo.filetype == 'html' then vim.opt_local.indentexpr = '' end
+    pattern = vim.tbl_keys(semicolon_shortcuts),
+    callback = function(args)
+      local m = semicolon_shortcuts[args.match]
+      vim.keymap.set('i', ';;', m.rhs, { buffer = args.buf, desc = m.desc })
     end,
   })
-
-  vim.api.nvim_create_autocmd('FileType', {
-    pattern = 'kotlin',
-    callback = function() vim.opt_local.formatoptions:remove { 'r', 'o' } end,
-  })
-
-  -- Type ;; in insert mode to instantly get a padded pipe operator
-  vim.keymap.set('i', ';;', '|> ', { desc = 'Insert Elixir pipe operator' })
 
   -- Set <space> as the leader key
   -- See `:help mapleader`
@@ -150,10 +156,10 @@ do
   -- Don't show the mode, since it's already in the status line
   vim.o.showmode = false
 
-  -- Default tab options, 4 spaces
+  -- Default tab options, 2 spaces
   vim.o.expandtab = true
-  vim.o.tabstop = 4
-  vim.o.shiftwidth = 4
+  vim.o.tabstop = 2
+  vim.o.shiftwidth = 2
 
   -- Sync clipboard between OS and Neovim.
   --  Schedule the setting after `UiEnter` because it can increase startup-time.
