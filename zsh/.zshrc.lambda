@@ -22,11 +22,11 @@ alias pgstop='pg_ctl -D /usr/local/var/postgres stop -s -m fast'
 . "$HOME/.cargo/env"
 
 # ghcup manages ghci and stack (haskell)
-[ -f "/Users/Lewis/.ghcup/env" ] && . "/Users/Lewis/.ghcup/env" # ghcup-env
+[ -f "/Users/llcawthorne/.ghcup/env" ] && . "/Users/llcawthorne/.ghcup/env" # ghcup-env
 
 # nvm manages node
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"
 
 # pyenv manages python
 export PYENV_ROOT="$HOME/.pyenv"
@@ -36,9 +36,11 @@ eval "$(pyenv init -)"
 export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 export PATH=$GOPATH/bin:$PATH
 export PATH=$(brew --prefix ruby)/bin:$PATH
-export PATH=/Library/TeX/texbin:$PATH
 export PATH=$PATH:/usr/local/bin:/usr/local/sbin
 export PATH=$PATH:/usr/bin:/bin:/usr/sbin:/sbin
+
+export LDFLAGS="-L$(brew --prefix ruby)/lib"
+export CPPFLAGS="-I$(brew --prefix ruby)/include"
 
 # Always start tmux
 # Auto-attach or create tmux session
@@ -51,9 +53,9 @@ export HOMEBREW_GITHUB_API_TOKEN="$(gh auth token 2>/dev/null)"
 export LDFLAGS="-L/usr/local/opt/ruby/lib"
 export CPPFLAGS="-I/usr/local/opt/ruby/include"
 
-. ~/bin/z.sh
+[ -f /opt/homebrew/etc/profile.d/z.sh ] && source /opt/homebrew/etc/profile.d/z.sh
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/Users/Lewis/.sdkman"
-[[ -s "/Users/Lewis/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/Lewis/.sdkman/bin/sdkman-init.sh"
+export SDKMAN_DIR="/Users/llcawthorne/.sdkman"
+[[ -s "/Users/llcawthorne/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/llcawthorne/.sdkman/bin/sdkman-init.sh"
 

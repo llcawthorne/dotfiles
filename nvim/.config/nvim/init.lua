@@ -756,6 +756,13 @@ do
     rust_analyzer = {},
     clojure_lsp = {},
     elixirls = {},
+    hls = {
+      settings = {
+        haskell = {
+          formattingProvider = 'fourmolu',
+        },
+      },
+    },
     -- this one was messing up in Gradle projects due to a known bug
     -- so got disabled. I do most Kotlin in IntelliJ anyway.
     --kotlin_language_server = {

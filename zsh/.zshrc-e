@@ -194,7 +194,3 @@ if [ -f ~/.zshrc.local ]; then
   source ~/.zshrc.local
 fi
 
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/Users/llcawthorne/.sdkman"
-[[ -s "/Users/llcawthorne/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/llcawthorne/.sdkman/bin/sdkman-init.sh"

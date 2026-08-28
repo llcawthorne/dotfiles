@@ -13,7 +13,6 @@
 # rustup — run rustup-init after brew installs it
 
 # Taps
-tap "homebrew/bundle"
 tap "nikitabobko/tap"              # Aerospace
 tap "borkdude/brew"                # Babashka
 
@@ -33,12 +32,12 @@ brew "wget"
 brew "vim"
 brew "terminal-notifier"
 brew "entr"
+brew "z"
 
 # Markdown / docs
 brew "grip"
 brew "glow"
 brew "pandoc"
-brew "basictex"                    # pandoc PDF rendering backend
 
 # Languages & runtimes
 brew "elixir"
@@ -47,6 +46,7 @@ brew "nvm"
 brew "rustup"
 brew "pipx"
 brew "pyenv"
+brew "ruby"
 brew "lua"
 brew "kotlin"
 brew "ktlint"
@@ -70,7 +70,7 @@ brew "hugo"
 # GUI apps (casks)
 cask "iterm2"
 cask "obsidian"
-cask "aerospace"
+#cask "aerospace"
 cask "jetbrains-toolbox"
 cask "claude"
 cask "claude-code"
@@ -90,7 +90,8 @@ cask "popclip"
 cask "maccy"
 cask "libreoffice"
 cask "docker"
-cask "borders"
+cask "folx"
+cask "mactex-no-gui"
 
 # Mac App Store (manual — must be signed into App Store first)
 # brew "mas"
