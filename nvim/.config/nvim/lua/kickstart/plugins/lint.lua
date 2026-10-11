@@ -6,7 +6,12 @@ local lint = require 'lint'
 lint.linters_by_ft = {
   markdown = { 'markdownlint' }, -- Make sure to install `markdownlint` via mason / npm
   kotlin = { 'ktlint' },
+  htmldjango = { 'djlint' },
 }
+
+-- djlint only reads config at the project root (it stops at .git), so name
+-- ~/.djlintrc as the default; a project's own .djlintrc still wins.
+lint.linters.djlint.args = vim.list_extend({ '--configuration', vim.fn.expand '~/.djlintrc' }, lint.linters.djlint.args)
 
 -- To allow other plugins to add linters to require('lint').linters_by_ft,
 -- instead set linters_by_ft like this:
