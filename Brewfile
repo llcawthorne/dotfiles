@@ -58,6 +58,7 @@ brew "borkdude/brew/babashka"
 # Python tooling
 brew "isort"
 brew "black"
+brew "pygments"
 
 # Data & databases
 brew "sqlite"

@@ -92,6 +92,20 @@ do
   -- Enable faster startup by caching compiled Lua modules
   vim.loader.enable()
 
+  -- disabled continuation of single-line comments in all languages
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = '*',
+    callback = function() vim.opt_local.formatoptions:remove { 'r', 'o' } end,
+  })
+
+  -- The HTML indent rules htmldjango uses don't know Django tags, so typing
+  -- the closing %} would snap the line back to column 0. djlint fixes the
+  -- indent on save instead.
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = 'htmldjango',
+    callback = function() vim.opt_local.indentkeys:remove { '{', '}' } end,
+  })
+
   vim.api.nvim_create_autocmd('FileType', {
     pattern = { 'go', 'python', 'java', 'c', 'cpp', 'kotlin', 'html' },
     callback = function(args)
@@ -105,10 +119,6 @@ do
         vim.opt_local.tabstop = 4
         vim.opt_local.shiftwidth = 4
         vim.opt_local.expandtab = true
-      elseif ft == 'kotlin' then
-        vim.opt_local.formatoptions:remove { 'r', 'o' }
-      elseif ft == 'html' then
-        vim.opt_local.indentexpr = ''
       end
     end,
   })
@@ -883,6 +893,7 @@ do
         javascript = true,
         kotlin = true,
         elixir = true,
+        htmldjango = true,
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
         return { timeout_ms = 3000 }
@@ -902,9 +913,15 @@ do
       kotlin = { 'ktlint' },
       go = { 'gofmt' },
       elixir = { 'mix_format' },
+      htmldjango = { 'djlint' },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
       javascript = { 'prettierd', 'prettier', stop_after_first = true },
+    },
+    formatters = {
+      -- djlint only reads config at the project root (it stops at .git), so
+      -- name ~/.djlintrc as the default; a project's own .djlintrc still wins.
+      djlint = { prepend_args = { '--configuration', vim.fn.expand '~/.djlintrc' } },
     },
   }
 
@@ -1030,8 +1047,10 @@ do
     -- in case there is no indent query, the indentexpr will fallback to the vim's built in one
     local has_indent_query = vim.treesitter.query.get(language, 'indents') ~= nil
 
-    -- Enable treesitter based indentation
-    if has_indent_query and language ~= 'go' then vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" end
+    -- Enable treesitter based indentation except for certain languages
+    if has_indent_query and not vim.tbl_contains({ 'go', 'ruby', 'html', 'htmldjango' }, language) then
+      vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+    end
   end
 
   local available_parsers = require('nvim-treesitter').get_available()
