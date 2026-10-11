@@ -753,7 +753,14 @@ do
         signatureHelpProvider = false,
       },
     },
-    rust_analyzer = {},
+    rust_analyzer = {
+      settings = {
+        ['rust-analyzer'] = {
+          -- Run clippy instead of `cargo check` on save, so lints show up as diagnostics
+          check = { command = 'clippy' },
+        },
+      },
+    },
     clojure_lsp = {},
     elixirls = {},
     hls = {
