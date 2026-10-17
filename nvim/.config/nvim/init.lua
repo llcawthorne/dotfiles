@@ -863,6 +863,7 @@ do
   end, ensure_installed)
   vim.list_extend(ensure_installed, {
     -- You can add other tools here that you want Mason to install
+    'goimports',
   })
 
   require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -911,7 +912,7 @@ do
       python = { 'isort', 'black' },
       clojure = { 'cljfmt' },
       kotlin = { 'ktlint' },
-      go = { 'gofmt' },
+      go = { 'goimports' },
       elixir = { 'mix_format' },
       htmldjango = { 'djlint' },
       --
@@ -1029,6 +1030,9 @@ do
   -- Ensure basic parsers are installed
   local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
   require('nvim-treesitter').install(parsers)
+
+  -- Short fenced code block names nvim-treesitter doesn't alias (it already covers py, js, sh)
+  vim.treesitter.language.register('rust', 'rs')
 
   ---@param buf integer
   ---@param language string
