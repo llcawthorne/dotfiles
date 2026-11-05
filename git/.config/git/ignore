@@ -1,5 +1,8 @@
 # AI Agent instructions (private to local machine)
 CLAUDE.md
 AGENTS.md
+HANDOFF.md
+handoff.md
 .claude/
 .gemini/
+
