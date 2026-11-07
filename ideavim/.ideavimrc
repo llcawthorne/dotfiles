@@ -1,0 +1,42 @@
+"" ~/.ideavimrc
+"" IdeaVim configuration for IntelliJ / RustRover
+
+" Sync with macOS system clipboard (y and p use system clipboard)
+set clipboard+=unnamed,unnamedplus
+
+" Search settings
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+
+" Line numbers
+set number
+set relativenumber
+
+" Leader key
+let mapleader=" "
+
+" Clear search highlighting
+map <silent> <leader><cr> :noh<CR>
+nmap <leader>/ :nohlsearch<CR>
+
+" Fast save
+nmap <leader>w :w<CR>
+
+" Visual mode indentation: keep visual selection after indenting
+vmap <tab> >gv
+vmap <s-tab> <gv
+vmap > >gv
+vmap < <gv
+
+" Useful IdeaVim built-in extensions
+set surround
+set multiple-cursors
+set commentary
+set argtextobj
+set textobj-entire
+
+" Treat visual lines naturally
+map j gj
+map k gk

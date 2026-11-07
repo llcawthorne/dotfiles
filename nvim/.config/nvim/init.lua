@@ -193,6 +193,9 @@ do
   -- Decrease update time
   vim.o.updatetime = 250
 
+  -- Auto-reload files when changed outside of Neovim
+  vim.o.autoread = true
+
   -- Decrease mapped sequence wait time
   vim.o.timeoutlen = 300
 
@@ -224,6 +227,9 @@ do
   -- instead raise a dialog asking if you wish to save the current file(s)
   -- See `:help 'confirm'`
   vim.o.confirm = true
+
+  -- Flag lines exceeding 80 and 120 characters by highlighting columns 81 and 121
+  vim.opt.colorcolumn = '81,121'
 
   -- [[ Basic Keymaps ]]
   --  See `:help vim.keymap.set()`
@@ -257,6 +263,14 @@ do
   }
 
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+  vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show line [E]rror / diagnostic' })
+
+  -- Run tests for the current file's package (go test) or crate (cargo test) in a split
+  vim.keymap.set('n', '<leader>rt', function()
+    local dir = vim.fn.expand '%:p:h'
+    local cmd = vim.bo.filetype == 'rust' and 'cargo test' or 'go test'
+    vim.cmd('botright split | resize 15 | terminal cd ' .. vim.fn.shellescape(dir) .. ' && ' .. cmd)
+  end, { desc = '[R]un [T]ests' })
 
   -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
   -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -297,6 +311,28 @@ do
     desc = 'Highlight when yanking (copying) text',
     group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
     callback = function() vim.hl.on_yank() end,
+  })
+
+  -- Auto-reload file when focused or on cursor hold
+  vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold' }, {
+    desc = 'Reload file if changed on disk',
+    group = vim.api.nvim_create_augroup('kickstart-auto-reload', { clear = true }),
+    callback = function()
+      if vim.fn.mode() ~= 'c' then
+        vim.cmd 'checktime'
+      end
+    end,
+  })
+
+  -- Auto-save file when Neovim loses focus (like VS Code)
+  vim.api.nvim_create_autocmd({ 'FocusLost', 'BufLeave' }, {
+    desc = 'Auto-save buffer on focus lost or buffer leave',
+    group = vim.api.nvim_create_augroup('kickstart-auto-save', { clear = true }),
+    callback = function()
+      if vim.fn.mode() ~= 'c' and vim.bo.buftype == '' and not vim.bo.readonly and vim.fn.expand '%' ~= '' then
+        vim.cmd 'silent! update'
+      end
+    end,
   })
 end
 
@@ -431,40 +467,22 @@ do
   }
 
   -- [[ Colorscheme ]]
-  -- You can easily change to a different colorscheme.
-  -- Change the name of the colorscheme plugin below, and then
-  -- change the command under that to load whatever the name of that colorscheme is.
-  --
-  -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  vim.pack.add { gh 'flazz/vim-colorschemes' }
-  -- Load the Vimscript theme plugin before using its colorscheme.
-  pcall(vim.cmd, 'packadd vim-colorschemes')
-  -- flazz/vim-colorschemes provides the classic 'railscasts' Vimscript colorscheme.
-  -- Load it via `colorscheme` (do NOT `require()` a Vimscript colorscheme).
-  pcall(vim.cmd, 'colorscheme railscasts')
+  vim.pack.add { gh 'folke/tokyonight.nvim' }
+  require('tokyonight').setup {
+    style = 'night',
+    styles = { comments = { italic = false } },
+  }
+  vim.cmd.colorscheme 'tokyonight-night'
 
-  -- Disable italics for comments while preserving the theme's comment color.
-  pcall(function()
-    local comment = vim.api.nvim_get_hl_by_name('Comment', true)
-    if comment then
-      comment.italic = false
-      vim.api.nvim_set_hl(0, 'Comment', comment)
-    end
-    local tscomment = vim.api.nvim_get_hl_by_name('TSComment', true)
-    if tscomment then
-      tscomment.italic = false
-      vim.api.nvim_set_hl(0, 'TSComment', tscomment)
-    end
-  end)
+  -- Tomorrow-Night (via vim-colorschemes)
+  -- vim.pack.add { gh 'flazz/vim-colorschemes' }
+  -- pcall(vim.cmd, 'packadd vim-colorschemes')
+  -- pcall(vim.cmd, 'colorscheme Tomorrow-Night')
 
-  -- How to disable italics for a Lua-based colorscheme (example: Tokyonight)
-  -- Uncomment and adapt if you switch to a Lua theme.
-  -- vim.pack.add { gh 'folke/tokyonight.nvim' }
-  -- require('tokyonight').setup {
-  --   style = 'night',
-  --   styles = { comments = { italic = false } },
-  -- }
-  -- vim.cmd.colorscheme 'tokyonight-night'
+  -- flazz/vim-colorschemes (provides classic 'railscasts' Vimscript colorscheme)
+  -- vim.pack.add { gh 'flazz/vim-colorschemes' }
+  -- pcall(vim.cmd, 'packadd vim-colorschemes')
+  -- pcall(vim.cmd, 'colorscheme railscasts')
 
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
@@ -477,10 +495,18 @@ do
   -- Better Around/Inside textobjects
   --
   -- Examples:
+  --  - cif  - [C]hange [I]nside [F]unction
+  --  - caf  - [C]hange [A]round [F]unction
+  --  - cic  - [C]hange [I]nside [C]lass/Struct/Impl
+  --  - cia  - [C]hange [I]nside [A]rgument
   --  - va)  - [V]isually select [A]round [)]paren
-  --  - yiiq - [Y]ank [I]nside [I]+1 [Q]uote
   --  - ci'  - [C]hange [I]nside [']quote
-  require('mini.ai').setup {
+  local ai = require 'mini.ai'
+  ai.setup {
+    custom_textobjects = {
+      f = ai.gen_spec.treesitter { a = '@function.outer', i = '@function.inner' },
+      c = ai.gen_spec.treesitter { a = '@class.outer', i = '@class.inner' },
+    },
     -- NOTE: Avoid conflicts with the built-in incremental selection mappings on Neovim>=0.12 (see `:help treesitter-incremental-selection`)
     mappings = {
       around_next = 'aa',
@@ -895,6 +921,7 @@ do
         kotlin = true,
         elixir = true,
         htmldjango = true,
+        gotmpl = true,
       }
       if enabled_filetypes[vim.bo[bufnr].filetype] then
         return { timeout_ms = 3000 }
@@ -915,6 +942,7 @@ do
       go = { 'goimports' },
       elixir = { 'mix_format' },
       htmldjango = { 'djlint' },
+      gotmpl = { 'djlint_go' },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
       javascript = { 'prettierd', 'prettier', stop_after_first = true },
@@ -923,6 +951,11 @@ do
       -- djlint only reads config at the project root (it stops at .git), so
       -- name ~/.djlintrc as the default; a project's own .djlintrc still wins.
       djlint = { prepend_args = { '--configuration', vim.fn.expand '~/.djlintrc' } },
+      -- Same djlint and ~/.djlintrc, but with the Go template profile for .gohtml
+      djlint_go = {
+        inherit = 'djlint',
+        prepend_args = { '--configuration', vim.fn.expand '~/.djlintrc', '--profile', 'golang' },
+      },
     },
   }
 
@@ -940,7 +973,12 @@ do
   -- NOTE: You can also specify plugin using a version range for its git tag.
   --  See `:help vim.version.range()` for more info
   vim.pack.add { { src = gh 'L3MON4D3/LuaSnip', version = vim.version.range '2.*' } }
-  require('luasnip').setup {}
+  require('luasnip').setup {
+    -- Forget a snippet once the cursor leaves it or its text is deleted, so
+    -- <Tab> indents instead of jumping back to stale placeholders.
+    region_check_events = 'CursorHold,InsertLeave',
+    delete_check_events = 'TextChanged,InsertEnter',
+  }
 
   -- `friendly-snippets` contains a variety of premade snippets.
   --    See the README about individual language/framework/plugin snippets:
@@ -948,6 +986,9 @@ do
   --
   -- vim.pack.add { gh 'rafamadriz/friendly-snippets' }
   -- require('luasnip.loaders.from_vscode').lazy_load()
+
+  -- My own snippets: snippets/<filetype>.lua in this config directory
+  require('luasnip.loaders.from_lua').lazy_load { paths = { vim.fn.stdpath 'config' .. '/snippets' } }
 
   -- [[ Autocomplete Engine ]]
   vim.pack.add { { src = gh 'saghen/blink.cmp', version = vim.version.range '1.*' } }
@@ -1034,6 +1075,9 @@ do
   -- Short fenced code block names nvim-treesitter doesn't alias (it already covers py, js, sh)
   vim.treesitter.language.register('rust', 'rs')
 
+  -- Go html/template files; after/queries/gotmpl/injections.scm adds HTML highlighting
+  vim.filetype.add { extension = { gohtml = 'gotmpl' } }
+
   ---@param buf integer
   ---@param language string
   local function treesitter_try_attach(buf, language)
@@ -1105,7 +1149,7 @@ do
   -- NOTE: You can add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- require 'custom.plugins'
+  require 'custom.plugins'
 end
 
 -- The line beneath this is called `modeline`. See `:help modeline`

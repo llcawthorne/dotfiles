@@ -263,3 +263,10 @@ endif
 
 let mapleader=" "
 
+" Auto-reload files when changed outside of Vim (on focus or cursor hold)
+set autoread
+autocmd FocusGained,BufEnter,CursorHold * if mode() !~# 'c' | checktime | endif
+
+" Auto-save file when Vim loses focus (like VS Code)
+autocmd FocusLost,BufLeave * if mode() !~# 'c' && &buftype == '' && !&readonly && expand('%') != '' | silent! update | endif
+

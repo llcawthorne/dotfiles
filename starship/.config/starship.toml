@@ -1,0 +1,83 @@
+# Tokyo Night theme for Starship
+"$schema" = 'https://starship.rs/config-schema.json'
+
+add_newline = true
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$package\
+$rust\
+$golang\
+$nodejs\
+$python\
+$docker_context\
+$cmd_duration\
+$line_break\
+$character"""
+
+[directory]
+style = "bold #7aa2f7"
+truncate_to_repo = false
+truncation_length = 3
+fish_style_pwd_dir_length = 1
+
+[git_branch]
+symbol = " "
+style = "bold #bb9af7"
+format = "on [$symbol$branch]($style) "
+
+[git_status]
+style = "#e0af68"
+format = '([\[$all_status$ahead_behind\]]($style) )'
+conflicted = "🏳 "
+ahead = "⇡"
+behind = "⇣"
+diverged = "⇕"
+untracked = "?"
+modified = "!"
+staged = "+"
+renamed = "»"
+deleted = "✘"
+
+[package]
+disabled = true
+
+[rust]
+symbol = "🦀 "
+style = "bold #ff9e64"
+format = "via [$symbol($version )]($style) "
+
+[golang]
+symbol = " "
+style = "bold #7dcfff"
+format = "via [$symbol($version )]($style) "
+
+[nodejs]
+symbol = " "
+style = "bold #9ece6a"
+format = "via [$symbol($version )]($style) "
+
+[python]
+symbol = "🐍 "
+style = "bold #e0af68"
+format = 'via [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style) '
+
+[docker_context]
+symbol = " "
+style = "bold #7aa2f7"
+format = "via [$symbol$context]($style) "
+
+[cmd_duration]
+min_time = 2_000
+style = "italic #565f89"
+format = "took [$duration]($style) "
+
+[character]
+success_symbol = "[❯](bold #9ece6a)"
+error_symbol = "[❯](bold #f7768e)"
+vimcmd_symbol = "[❮](bold #bb9af7)"
+vimcmd_replace_one_symbol = "[❮](bold #ff9e64)"
+vimcmd_replace_symbol = "[❮](bold #ff9e64)"
+vimcmd_visual_symbol = "[❮](bold #e0af68)"

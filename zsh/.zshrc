@@ -5,7 +5,8 @@ export ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="agnoster"
+# ZSH_THEME="agnoster"
+ZSH_THEME=""
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -50,7 +51,7 @@ DISABLE_UPDATE_PROMPT=true
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(common-aliases docker extract git lol sudo web-search)
+plugins=(common-aliases docker extract git lol sudo web-search zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -80,9 +81,11 @@ export EDITOR='nvim'
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 # Some alias entries
-alias ls='ls -F'
-alias ll='ls -FlahS'
-alias lsd='ls -l | grep "^d"'
+alias ls='eza --icons'
+alias ll='eza -lah --icons --git --sort=size'
+alias tree='eza --tree --icons'
+alias lsdir='eza -lD --icons'
+alias cat='bat --paging=never'
 alias ..='cd ..'
 alias ...='cd ../..'
 alias grep='grep --color'
@@ -107,11 +110,31 @@ alias gk='git --all&'
 alias gx='git --all'
 alias glog="git log --oneline --graph --decorate --all"
 
+## Cargo aliases
+alias cb='cargo build'
+alias cc='cargo check'
+alias ct='cargo test'
+alias cr='cargo run'
+alias ccl='cargo clippy --all-targets -- -D warnings'
+alias cdoc='cargo doc --open --no-deps'
+
 # aliases for markdown commands
 mdview() {
   pandoc "$1" -o /tmp/preview.html --standalone --metadata charset=utf-8 && open /tmp/preview.html
 }
-    
+mkepub() {
+  pandoc "$1" -o "$2" --shift-heading-level-by=-1 --toc --mathml
+}
+
+# alias for password generation
+#genpass() {
+#  local pwd="$(opgen words --size=5 --capitalize=first)-77"
+#  printf "%s" "$pwd" | pbcopy
+#  echo "$pwd"
+#}
+alias genpass='spg --suffix -77 --clip'
+alias targetclean='find . -type d -name target -prune -exec rm -rf {} +'
+
 alias vi='nvim'
 alias vim='nvim'
 
@@ -183,7 +206,42 @@ print(json.dumps(list(csv.reader(open(\'${1}\')))))
 ## in EVIL mode, it won't understand.  Get them vim keybindings here:
 bindkey -v
 
+# Bind Ctrl+E to accept autosuggestions without leaving the home row
+bindkey '^E' autosuggest-accept
+bindkey -M viins '^E' autosuggest-accept
+bindkey -M vicmd '^E' autosuggest-accept
+
+# Set up fzf key bindings and fuzzy completion (Ctrl+R, Ctrl+T, Alt+C)
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+fi
+
+# Initialize zoxide (smarter cd with 'z' and 'zi')
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
+
 export GOPATH=$HOME/go
+
+# gotestsum --watch that restarts itself when a new package appears, since
+# gotestsum only watches the directories that existed when it started
+gtw() {
+  local before poller
+  while true; do
+    before=$(go list ./... 2>/dev/null)
+    {
+      while [[ "$(go list ./... 2>/dev/null)" == "$before" ]]; do sleep 2; done
+      pkill -P $$ -x gotestsum
+    } &!
+    poller=$!
+    gotestsum --watch --format pkgname-and-test-fails "$@"
+    if kill -0 $poller 2>/dev/null; then
+      kill $poller
+      break
+    fi
+    print -P "%F{yellow}package list changed, restarting gotestsum%f"
+  done
+}
 
 # Remove the safety aliases introduced by common-aliases
 unalias rm
@@ -198,3 +256,9 @@ fi
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/llcawthorne/.sdkman"
 [[ -s "/Users/llcawthorne/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/llcawthorne/.sdkman/bin/sdkman-init.sh"
+
+# Added by Antigravity IDE
+export PATH="/Users/llcawthorne/.antigravity-ide/antigravity-ide/bin:$PATH"
+
+# Starship prompt (Tomorrow Night Dark theme)
+eval "$(/opt/homebrew/bin/starship init zsh)"
