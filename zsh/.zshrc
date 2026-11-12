@@ -221,7 +221,7 @@ if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh)"
 fi
 
-export GOPATH=$HOME/go
+export GOPATH=$HOME/Go
 
 # gotestsum --watch that restarts itself when a new package appears, since
 # gotestsum only watches the directories that existed when it started
