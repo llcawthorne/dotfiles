@@ -81,10 +81,10 @@ export EDITOR='nvim'
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 # Some alias entries
-alias ls='eza --icons'
-alias ll='eza -lah --icons --git --sort=size'
-alias tree='eza --tree --icons'
-alias lsdir='eza -lD --icons'
+alias ls='eza --icons=auto'
+alias ll='eza -lah --icons=auto --git --sort=size'
+alias tree='eza --tree --icons=auto'
+alias lsdir='eza -lD --icons=auto'
 alias cat='bat --paging=never'
 alias ..='cd ..'
 alias ...='cd ../..'

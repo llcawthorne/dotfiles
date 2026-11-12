@@ -48,14 +48,15 @@ export CPPFLAGS="-I$(brew --prefix ruby)/include"
 # Auto-attach or create tmux session
 if [[ -n "$ITERM_SESSION_ID" && -z "$TMUX" ]]; then
   session_name="iterm-${ITERM_SESSION_ID//[:.]/_}"
-  tmux new-session -A -s "$session_name"
+  exec tmux new-session -A -s "$session_name"
 fi
 
 export HOMEBREW_GITHUB_API_TOKEN="$(gh auth token 2>/dev/null)"
 export LDFLAGS="-L/usr/local/opt/ruby/lib"
 export CPPFLAGS="-I/usr/local/opt/ruby/include"
 
-[ -f /opt/homebrew/etc/profile.d/z.sh ] && source /opt/homebrew/etc/profile.d/z.sh
+# Legacy z.sh replaced by zoxide
+# [ -f /opt/homebrew/etc/profile.d/z.sh ] && source /opt/homebrew/etc/profile.d/z.sh
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/llcawthorne/.sdkman"

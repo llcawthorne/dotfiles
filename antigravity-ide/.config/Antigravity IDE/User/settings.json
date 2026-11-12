@@ -1,0 +1,181 @@
+{
+  // Editor display & fonts
+  "editor.fontFamily": "'JetBrainsMono Nerd Font', Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontLigatures": true,
+  "editor.rulers": [80],
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+
+  // Terminal fonts & buffer
+  "terminal.integrated.fontFamily": "'JetBrainsMono Nerd Font Mono'",
+  "terminal.integrated.scrollback": 10000,
+
+  // File saving & whitespace
+  "files.autoSave": "off",
+  "files.autoSaveDelay": 1000,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  // Visual cleanliness & navigation
+  "editor.minimap.enabled": false,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": "active",
+  "editor.cursorBlinking": "smooth",
+  "editor.smoothScrolling": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "diffEditor.renderSideBySide": true,
+
+  // Antigravity workflow
+  "antigravity.autoAcceptOnChat": false,
+  "antigravity.autoOpenFiles": true,
+
+  // Language linters & formatting
+  "rust-analyzer.check.command": "clippy",
+  "markdown.editor.pasteUrlAsFormattedLink.enabled": "smartWithSelection",
+  "prettier.proseWrap": "always",
+
+  "[markdown]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "other": "off",
+      "comments": "off",
+      "strings": "off"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    }
+  },
+
+  // Calva (Clojure)
+  "calva.paredit.defaultKeyMap": "strict",
+  "calva.prettyPrintingOptions": {
+    "printEngine": "pprint",
+    "enabled": false,
+    "width": 120,
+    "maxLength": 50
+  },
+  // Spell check dictionary
+  "cSpell.dictionaries": ["lorem-ipsum"],
+  "cSpell.userWords": [
+    "aeiou",
+    "anyhow",
+    "argparsing",
+    "backpressure",
+    "calva",
+    "CBOR",
+    "charliermarsh",
+    "clippy",
+    "combinators",
+    "deallocates",
+    "debuginfo",
+    "deref",
+    "desugars",
+    "doctests",
+    "dsugars",
+    "elem",
+    "elems",
+    "eprintln",
+    "esbenp",
+    "filehandle",
+    "fmap",
+    "i128",
+    "inlineable",
+    "isize",
+    "kinded",
+    "libname",
+    "llcawthorne",
+    "Menlo",
+    "memcpy",
+    "miri",
+    "monomorphization",
+    "monomorphized",
+    "monomorphizes",
+    "mpsc",
+    "multibyte",
+    "myapp",
+    "newtype",
+    "newtypes",
+    "nextest",
+    "nonblank",
+    "occaecati",
+    "parallelizable",
+    "paredit",
+    "pointee",
+    "powi",
+    "pprint",
+    "println",
+    "proptest",
+    "pytest",
+    "replacen",
+    "repost",
+    "reqwest",
+    "rfind",
+    "RPIT",
+    "rstest",
+    "Rustacean",
+    "Rustaceans",
+    "rustc",
+    "rustonomicon",
+    "rustup",
+    "searchstring",
+    "serde",
+    "subtrait",
+    "summarizable",
+    "supertrait",
+    "supertraits",
+    "thiserror",
+    "tokenstream",
+    "turbofish",
+    "typestate",
+    "u128",
+    "usize",
+    "vtable",
+    "vtables",
+    "waitlist",
+    "zstd"
+  ],
+  "workbench.colorTheme": "Tokyo Night",
+  "workbench.colorCustomizations": {
+    "[Tomorrow Night]": {
+      // Uniform deep black base #141619
+      "editor.background": "#141619",
+      "terminal.background": "#141619",
+      "sideBar.background": "#141619",
+      "panel.background": "#141619",
+      "activityBar.background": "#141619",
+      "titleBar.activeBackground": "#141619",
+      "statusBar.background": "#141619",
+      "editorGroup.emptyBackground": "#141619",
+      "editorGroupHeader.tabsBackground": "#141619",
+
+      // Clean borders with depth rather than flat gray
+      "sideBar.border": "#22252a",
+      "sideBarSectionHeader.background": "#1a1d21",
+      "sideBarSectionHeader.border": "#22252a",
+      "editorGroup.border": "#22252a",
+      "editorGroupHeader.tabsBorder": "#22252a",
+      "panel.border": "#22252a",
+      "activityBar.border": "#22252a",
+      "titleBar.border": "#22252a",
+      "statusBar.border": "#22252a",
+
+      // Distinct tabs
+      "tab.activeBackground": "#1f2227",
+      "tab.inactiveBackground": "#141619",
+      "tab.border": "#22252a",
+      "tab.activeBorderTop": "#81a2be"
+    }
+  },
+  "editor.inlineSuggest.enabled": false,
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

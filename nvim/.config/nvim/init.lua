@@ -907,6 +907,7 @@ end
 do
   -- [[ Formatting ]]
   vim.pack.add { gh 'stevearc/conform.nvim' }
+  local prettier = { 'prettierd', 'prettier', stop_after_first = true }
   require('conform').setup {
     notify_on_error = false,
     format_on_save = function(bufnr)
@@ -918,6 +919,16 @@ do
         go = true,
         clojure = true,
         javascript = true,
+        javascriptreact = true,
+        typescript = true,
+        typescriptreact = true,
+        html = true,
+        css = true,
+        scss = true,
+        json = true,
+        jsonc = true,
+        yaml = true,
+        markdown = true,
         kotlin = true,
         elixir = true,
         htmldjango = true,
@@ -943,11 +954,25 @@ do
       elixir = { 'mix_format' },
       htmldjango = { 'djlint' },
       gotmpl = { 'djlint_go' },
+      markdown = { 'prettier_markdown' },
       --
       -- You can use 'stop_after_first' to run the first available formatter from the list
-      javascript = { 'prettierd', 'prettier', stop_after_first = true },
+      javascript = prettier,
+      javascriptreact = prettier,
+      typescript = prettier,
+      typescriptreact = prettier,
+      html = prettier,
+      css = prettier,
+      scss = prettier,
+      json = prettier,
+      jsonc = prettier,
+      yaml = prettier,
     },
     formatters = {
+      prettier_markdown = {
+        inherit = 'prettier',
+        prepend_args = { '--prose-wrap', 'always' },
+      },
       -- djlint only reads config at the project root (it stops at .git), so
       -- name ~/.djlintrc as the default; a project's own .djlintrc still wins.
       djlint = { prepend_args = { '--configuration', vim.fn.expand '~/.djlintrc' } },
