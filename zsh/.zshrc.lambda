@@ -33,7 +33,7 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/shims:$PATH"
 eval "$(pyenv init -)"
 
-export PATH=$HOME/Bin:$HOME/.local/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:$PATH
 export PATH=$GOPATH/bin:$PATH
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH=$(brew --prefix ruby)/bin:$PATH
