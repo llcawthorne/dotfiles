@@ -31,3 +31,13 @@ map F file_chooser
 # Clipboard
 set selection-clipboard clipboard
 
+# Dark theme colors (Tokyo Night)
+set default-bg "#1a1b26"
+set default-fg "#c0caf5"
+set statusbar-bg "#16161e"
+set statusbar-fg "#c0caf5"
+set inputbar-bg "#16161e"
+set inputbar-fg "#c0caf5"
+set recolor-lightcolor "#1a1b26"
+set recolor-darkcolor "#c0caf5"
+
