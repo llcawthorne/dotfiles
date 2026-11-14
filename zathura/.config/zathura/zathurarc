@@ -1,0 +1,33 @@
+# --- Display Settings ---
+## Set default startup window width and height (in pixels)
+set window-width 1050
+set window-height 1500
+
+## Force single page mode (disables continuous scrolling)
+set pages-per-row 1
+set adjust-open "best-fit"
+
+# --- Dark Mode Settings ---
+## Invert colors for a dark background (keeps images normal with recolor-keephue)
+#set recolor true
+map d recolor
+set recolor-keephue true
+set recolor-lightcolor "#000000"
+set recolor-darkcolor "#FFFFFF"
+
+# Keybindings
+## Use vim keys to switch pages and straighten
+map j feedkeys "<S-j><S-p>"
+map k feedkeys "<S-k><S-p>"
+map l feedkeys "<S-j><S-p>"
+map h feedkeys "<S-k><S-p>"
+## Map Space to jump to next page and immediately snap edges straight
+map <Space> feedkeys "<S-j><S-p>"
+map <S-Space> feedkeys "<S-k><S-p>"
+
+## Add file_chooser on f and fzf script on F
+map F file_chooser
+
+# Clipboard
+set selection-clipboard clipboard
+
