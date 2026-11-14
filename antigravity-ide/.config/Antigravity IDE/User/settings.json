@@ -177,5 +177,6 @@
   "editor.inlineSuggest.enabled": false,
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "vim.useSystemClipboard": true
 }

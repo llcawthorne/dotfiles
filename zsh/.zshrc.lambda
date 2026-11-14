@@ -18,6 +18,26 @@ alias brewup="brew bundle --file=~/dotfiles/Brewfile"
 alias pgstart='pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start'
 alias pgstop='pg_ctl -D /usr/local/var/postgres stop -s -m fast'
 
+# alias t to work tmux session
+alias t='tmux new-session -A -s work'
+
+# A function to replace local tmux with melchior tmux and switch back on exit
+sshm() {
+  local target_session="${1:-ssh}"
+  if [[ -n "$TMUX" ]]; then
+    local current_session
+    current_session=$(tmux display-message -p '#S')
+    tmux set-option -t "$current_session" destroy-unattached off
+    tmux detach-client -E "ssh -t melchior '\$SHELL -lc \"tmux -u new-session -A -s $target_session\"'; tmux attach-session -t \"$current_session\" \; set-option destroy-unattached on || exec tmux new-session -s \"ghostty-$$\" \; set-option destroy-unattached on"
+  else
+    ssh -t melchior "\$SHELL -lc \"tmux -u new-session -A -s $target_session\""
+  fi
+}
+
+# Settings for GTK apps
+export GSETTINGS_SCHEMA_DIR="/opt/homebrew/share/glib-2.0/schemas"
+export XDG_DATA_DIRS="/opt/homebrew/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+
 # rustup manages rust
 . "$HOME/.cargo/env"
 
@@ -33,7 +53,7 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/shims:$PATH"
 eval "$(pyenv init -)"
 
-export PATH=$HOME/Bin:$HOME/.local/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
 export PATH=$GOPATH/bin:$PATH
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH=$(brew --prefix ruby)/bin:$PATH
@@ -50,6 +70,9 @@ if [[ -n "$ITERM_SESSION_ID" && -z "$TMUX" ]]; then
   session_name="iterm-${ITERM_SESSION_ID//[:.]/_}"
   exec tmux new-session -A -s "$session_name"
 fi
+if [[ -z "$TMUX" && "$TERM_PROGRAM" == "ghostty" ]]; then
+  exec tmux new-session -s "ghostty-$$" \; set-option destroy-unattached on
+fi
 
 export HOMEBREW_GITHUB_API_TOKEN="$(gh auth token 2>/dev/null)"
 export LDFLAGS="-L/usr/local/opt/ruby/lib"
@@ -61,4 +84,6 @@ export CPPFLAGS="-I/usr/local/opt/ruby/include"
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/Users/llcawthorne/.sdkman"
 [[ -s "/Users/llcawthorne/.sdkman/bin/sdkman-init.sh" ]] && source "/Users/llcawthorne/.sdkman/bin/sdkman-init.sh"
+
+eval "$(zoxide init --cmd cd zsh)"
 

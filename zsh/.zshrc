@@ -95,6 +95,7 @@ alias grep='grep --color'
 #alias emacs='emacsclient -a "" -t'
 alias irb='irb --readline -r irb/completion'
 
+
 #export ALTERNATE_EDITOR=emacs EDITOR=emacsclient VISUAL=emacsclient
 export CLICOLOR=1
 #export GROOVY_HOME=/usr/local/opt/groovy/libexec
