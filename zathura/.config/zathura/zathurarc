@@ -17,13 +17,13 @@ set recolor-darkcolor "#FFFFFF"
 
 # Keybindings
 ## Use vim keys to switch pages and straighten
-map j feedkeys "<S-j><S-p>"
-map k feedkeys "<S-k><S-p>"
-map l feedkeys "<S-j><S-p>"
-map h feedkeys "<S-k><S-p>"
+map j feedkeys "<S-J><S-P>"
+map k feedkeys "<S-K><S-P>"
+map l feedkeys "<S-J><S-P>"
+map h feedkeys "<S-K><S-P>"
 ## Map Space to jump to next page and immediately snap edges straight
-map <Space> feedkeys "<S-j><S-p>"
-map <S-Space> feedkeys "<S-k><S-p>"
+map <Space> feedkeys "<S-J><S-P>"
+map <S-Space> feedkeys "<S-K><S-P>"
 
 ## Add file_chooser on f and fzf script on F
 map F file_chooser
