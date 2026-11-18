@@ -12,3 +12,7 @@ vim.opt.softtabstop = 2
 
 -- Color columns at 81 and 121
 vim.opt.colorcolumn = "81,121"
+
+-- Root detection: check Cargo.lock alongside .git/lua after LSP so scripts
+-- and Cargo files inside a Rust project stay scoped to the crate/workspace.
+vim.g.root_spec = { "lsp", { "Cargo.lock", ".git", "lua" }, "cwd" }

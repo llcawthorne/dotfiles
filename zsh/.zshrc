@@ -117,7 +117,12 @@ alias cc='cargo check'
 alias ct='cargo test'
 alias cr='cargo run'
 alias ccl='cargo clippy --all-targets -- -D warnings'
+alias caud='cargo audit'
+alias caudit='cargo audit'
+alias ccov='cargo tarpaulin --ignore-tests'
 alias cdoc='cargo doc --open --no-deps'
+alias cwat='cargo watch -x check -x test -x run'
+alias cwatch='cargo watch -x check -x test -x run'
 
 # aliases for markdown commands
 mdview() {
